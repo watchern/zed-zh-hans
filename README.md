@@ -52,6 +52,11 @@ git clone https://github.com/zed-industries/zed.git
 ```bash
 python3 extract.py
 ```
+查看输出结果
+```bash
+python3 extract.py > extract.txt
+```
+
 删除多余词条，删除规则保存在`del.yaml`文件中：
 ```bash
 python3 delete.py
@@ -70,8 +75,14 @@ python3 delete.py
 python3 replace.py
 ```
 
+查看输出结果
+```bash
+python3 replace.py > replace.txt
+```
+
+
 ### 构建
-如果编译报错，删除 Zed 源码后重新克隆
+如果编译报错，删除 Zed 源码后重新克隆，并重新替换词条
 
 ```bash
 cd zed
