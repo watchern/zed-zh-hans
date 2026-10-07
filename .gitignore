@@ -171,5 +171,12 @@ cython_debug/
 .pypirc
 
 # zed 程序源码
-zed/
+/zed*
 verify_fix.py
+
+# github action 日志
+/logs_*
+
+
+# 调试文件
+/*.txt

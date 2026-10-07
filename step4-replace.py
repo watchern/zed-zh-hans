@@ -13,6 +13,13 @@ else:
 
 missing_files = []
 
+# 提取字符串中所有花括号占位符（含位置 {} 和具名 {name}、格式 {:?} 等）
+# 返回占位符内容的列表，保留重复（Rust format! 中多个 {} 各对应一个参数）
+_PLACEHOLDER_RE = re.compile(r'\{([^{}]*)\}')
+
+def extract_placeholders(s: str):
+    return _PLACEHOLDER_RE.findall(s)
+
 # 读取JSON文件内容
 with open(json_file_path, 'r', encoding='utf-8') as json_file:
     json_data = json.load(json_file)
@@ -30,6 +37,13 @@ for file_path, replacements in json_data.items():
     # 替换非空值（使用简单字符串替换，避免正则转义问题）
     for original, new_value in replacements.items():
         if new_value and original:  # 如果值不为空且键不为空
+            # 【占位符保护】若原文本含花括号占位符（如 Rust format! 的 {name}/{}/{:?}），
+            # 而翻译值把占位符丢光了，直接跳过并告警，避免破坏源码编译。
+            orig_ph = extract_placeholders(original)
+            if orig_ph and not extract_placeholders(new_value):
+                print(f'[SKIP] 占位符被丢弃，拒绝替换: {file_path}: {repr(original)} -> {repr(new_value)}')
+                continue
+
             # 直接字符串替换，不使用正则
             search_str = f'"{original}"'
             replace_str = f'"{new_value}"'
