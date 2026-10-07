@@ -46,10 +46,10 @@ def should_delete(key, keys_to_delete, patterns=()):
 
     return False
 
-def main(strings: str, deletes: str):
+def main(input_file: str, deletes: str):
 
     # 读取JSON文件内容
-    with open(strings, 'r', encoding='utf-8') as json_file:
+    with open(input_file, 'r', encoding='utf-8') as json_file:
         json_data = json.load(json_file)
 
     # 读取YAML文件内容
@@ -71,10 +71,10 @@ def main(strings: str, deletes: str):
             continue
         if file_path in json_data:
             json_data[file_path] = delete_keys_from_dict(
-                json_data[file_path], keys_to_delete, patterns=global_patterns)
+                json_data[file_path], keys_to_delete, level=2, patterns=global_patterns)
 
     # 将修改后的内容写回JSON文件
-    with open(strings, 'w', encoding='utf-8') as json_file:
+    with open(input_file, 'w', encoding='utf-8') as json_file:
         json.dump(json_data, json_file, ensure_ascii=False, indent=4)
 
     print('Successfully deleted specified keys from string.json')
@@ -82,11 +82,11 @@ def main(strings: str, deletes: str):
 if __name__ == '__main__':
     args = sys.argv
     # 默认参数
-    strings = json_file_path
+    input_file = json_file_path
     deletes = yaml_file_path
     if len(args) >= 2:
-        strings = args[1]
+        input_file = args[1]
     if len(args) >= 3:
         deletes = args[2]
 
-    main(strings, deletes)
+    main(input_file, deletes)

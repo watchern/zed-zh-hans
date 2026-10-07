@@ -16,6 +16,8 @@ global: # 全局规则，对所有文件生效
   - "Markdown"
   - "{}"
   - "rs"
+  - "http"
+  - "https"
   - "\n"
   - "\\n"
   - "/"
@@ -28,6 +30,49 @@ global: # 全局规则，对所有文件生效
 global_patterns: # 全局正则规则：键名匹配任一正则即删除（不进入翻译）
   - '\\u\{[0-9a-fA-F]+\}' # Rust unicode 转义序列 \u{...}（zalgo/组合字符等测试串，代码不可译）
   - '\\x[0-9a-fA-F]{2}' # Rust 十六进制转义序列 \xHH
+  # ---- 新增：Go / Rust / shell 测试与代码碎片（2026-10-08） ----
+  - 'func (Test|Benchmark|Example|Fuzz)[A-Za-z_]*\(' # Go 测试代码片段
+  - '\*testing\.[TMF]\b' # Go 测试代码片段
+  - 'if err != nil' # Go 测试代码片段
+  - 't\.(Run|Errorf|Fatal|Helper|Parallel)\(' # Go 测试代码片段
+  - '\bfmt\.(Errorf|Sprintf)\(' # Go 测试代码片段
+  - 'package main' # Go 测试代码片段
+  - '/dev/null' # shell 命令与重定向
+  - '2>&1' # shell 命令与重定向
+  - '1>&2' # shell 命令与重定向
+  - '#!\s*/(usr/)?bin/' # shell 命令与重定向
+  - '\|\s*(ba)?sh\b' # shell 命令与重定向
+  - '\bsudo\s+apt\b' # shell 命令与重定向
+  - 'apt-get install' # shell 命令与重定向
+  - '\becho\s' # shell 命令与重定向
+  - '\bpkill\b' # shell 命令与重定向
+  - '\bcommand -v\b' # shell 命令与重定向
+  - '\bchmod \+x\b' # shell 命令与重定向
+  - '\bfind \. -name\b' # shell 命令与重定向
+  - '^\s*ls\s+-' # shell 命令与重定向
+  - '^\s*cd\s' # shell 命令与重定向
+  - '^\s*rm\s+-' # shell 命令与重定向
+  - '^\s*mkdir\s' # shell 命令与重定向
+  - '^\s*grep\s' # shell 命令与重定向
+  - '\b(assert|assert_eq|assert_ne|expect|matches)!\(' # Rust 测试与代码碎片
+  - '#\[test\]' # Rust 测试与代码碎片
+  - '#\[gpui::test\]' # Rust 测试与代码碎片
+  - '#!\[cfg\(test\)\]' # Rust 测试与代码碎片
+  - '\bfn [a-z_][a-z0-9_]*\(' # Rust 测试与代码碎片
+  - '\bSome\(' # Rust 测试与代码碎片
+  - '\.unwrap\(\)' # Rust 测试与代码碎片
+  - '\.expect\(' # Rust 测试与代码碎片
+  - '=> \{' # Rust 测试与代码碎片
+  - 'Context<Self>' # Rust 测试与代码碎片
+  - '&mut Window' # Rust 测试与代码碎片
+  - '\.(update|update_in|read_with)\(cx' # Rust 测试与代码碎片
+  - 'cx\.propagate\(\)' # Rust 测试与代码碎片
+  - '\|cx\|' # Rust 测试与代码碎片
+  - '\|[a-z_]+, cx\|' # Rust 测试与代码碎片
+  - '\n\s*///' # Rust 注释碎片
+  - '\n\s*// ' # Rust 注释碎片
+  - '\.is_confirm\(\)' # 命令权限测试 API
+  - '\.is_deny\(\)' # 命令权限测试 API
 "zed/crates/activity_indicator/src/activity_indicator.rs":
   - " ({}%)"
   - "arrow-circle"
