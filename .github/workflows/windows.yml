@@ -47,7 +47,7 @@ jobs:
           python-version: "3.10"
 
       - name: 替换
-        run: python3 replace.py
+        run: python3 step4-replace.py
 
       - name: Install rust nightly
         uses: dtolnay/rust-toolchain@stable

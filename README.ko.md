@@ -46,11 +46,11 @@ git clone https://github.com/zed-industries/zed.git
 
 이후 문자열을 추출하며, 기본적으로 `strings.json` 파일에 저장합니다:
 ```bash
-python3 extract.py
+python3 step1-extract.py
 ```
 불필요한 문자열을 삭제하는 규칙은 `del.yaml` 파일에 저장되어 있습니다:
 ```bash
-python3 delete.py
+python3 step2-delete.py
 ```
 
 ### 문자열 번역
@@ -62,7 +62,7 @@ python3 delete.py
 
 `strings.json` 파일을 대상 언어 코드 이름으로 새로 저장한 후, 번역이 완료되면 다음 명령어를 실행하여 문자열을 교체합니다:
 ```bash
-python3 replace.py ko\ko-KR.json
+python3 step4-replace.py ko\ko-KR.json
 ```
 
 ### 빌드

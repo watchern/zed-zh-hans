@@ -27,7 +27,7 @@ jobs:
         run: pip install pyyaml
 
       - name: 自动删除
-        run: python3 delete.py
+        run: python3 step2-delete.py
 
       - name: 提交并推送
         run: |

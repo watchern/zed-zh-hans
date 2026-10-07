@@ -51,7 +51,7 @@ jobs:
           path: zed
 
       - name: 替换
-        run: python3 replace.py ja/ja-JP.json
+        run: python3 step4-replace.py ja/ja-JP.json
 
       - name: Install rust nightly
         uses: dtolnay/rust-toolchain@stable
@@ -99,7 +99,7 @@ jobs:
           ref: main
           path: zed
       - name: 替换
-        run: python3 replace.py ./ja/ja-JP.json
+        run: python3 step4-replace.py ./ja/ja-JP.json
 
       - name: 将 Rust 添加到 PATH
         run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
@@ -159,7 +159,7 @@ jobs:
           ref: main
           path: zed
       - name: 替换
-        run: python3 replace.py ./ja/ja-JP.json
+        run: python3 step4-replace.py ./ja/ja-JP.json
 
       - name: 安装 Linux 依赖项
         run: ./zed/script/linux

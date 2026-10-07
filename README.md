@@ -50,19 +50,19 @@ git clone https://github.com/zed-industries/zed.git
 
 提取词条，默认保存至`strings.json`文件：
 ```bash
-python3 extract.py
+python3 step1-extract.py
 ```
 查看输出结果
 ```bash
-python3 extract.py > extract.txt
+python3 step1-extract.py > step1-extract.txt
 ```
 
 删除多余词条，删除规则保存在`del.yaml`文件中：
 ```bash
-python3 delete.py
+python3 step2-delete.py
 ```
 
-### 翻译词条
+### Step3-翻译词条
 > [!caution]
 >
 > 警告：提取脚本规则是将引号内所有内容全部提取，翻译时请对照 Zed 源码翻译，同时留意不需要翻译的内容。
@@ -72,12 +72,12 @@ python3 delete.py
 
 然后将`strings.json`文件另存为，以目标语言代码为文件名，词条翻译完成后，执行以下命令替换词条：
 ```bash
-python3 replace.py
+python3 step4-replace.py
 ```
 
 查看输出结果
 ```bash
-python3 replace.py > replace.txt
+python3 step4-replace.py > step4-replace.txt
 ```
 
 

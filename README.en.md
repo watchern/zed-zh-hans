@@ -38,11 +38,11 @@ git clone https://github.com/zed-industries/zed.git
 
 Extract strings, which are saved by default to the `strings.json` file:
 ```bash
-python3 extract.py
+python3 step1-extract.py
 ```
 Remove redundant strings according to the rules saved in the `del.yaml` file:
 ```bash
-python3 delete.py
+python3 step2-delete.py
 ```
 
 > [!caution]
@@ -52,7 +52,7 @@ python3 delete.py
 
 Then save the `strings.json` file with the target language code as the filename. After completing the translation of the strings, run the following command to replace the strings:
 ```bash
-python3 replace.py <path/to/lang.json>
+python3 step4-replace.py <path/to/lang.json>
 ```
 
 ### Building

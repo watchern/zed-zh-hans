@@ -41,13 +41,13 @@ git clone https://github.com/zed-industries/zed.git
 次に、以下のコマンドを実行し、文字列を抽出します（デフォルトでは `strings.json` に保存）。
 
 ```bash
-python3 extract.py
+python3 step1-extract.py
 ```
 
 そして、`del.yaml` ファイル内のルールに従って冗長な文字列を削除します。
 
 ```bash
-python3 delete.py
+python3 step2-delete.py
 ```
 
 > [!caution]
@@ -59,7 +59,7 @@ python3 delete.py
 最後に、`strings.json` を目標言語コードに合わせたファイル名に保存し、置換スクリプトを実行します。
 
 ```bash
-python3 replace.py ja/ja-JP.json
+python3 step4-replace.py ja/ja-JP.json
 ```
 
 ## ビルド

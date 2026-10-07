@@ -53,7 +53,7 @@ jobs:
           path: zed
 
       - name: 替换
-        run: python3 replace.py
+        run: python3 step4-replace.py
 
       - name: Xcode
         run: |

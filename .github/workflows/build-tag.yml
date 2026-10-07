@@ -63,7 +63,7 @@ jobs:
           path: zed
 
       - name: 替换
-        run: python3 replace.py
+        run: python3 step4-replace.py
 
       - name: Install rust nightly
         uses: dtolnay/rust-toolchain@stable
@@ -112,7 +112,7 @@ jobs:
           ref: ${{ inputs.branch }}
           path: zed
       - name: 替换
-        run: python3 replace.py
+        run: python3 step4-replace.py
 
       - name: 将 Rust 添加到 PATH
         run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
@@ -181,7 +181,7 @@ jobs:
           ref: ${{ inputs.branch }}
           path: zed
       - name: 替换
-        run: python3 replace.py
+        run: python3 step4-replace.py
 
       - name: 同步版本号到 control 文件
         run: |
