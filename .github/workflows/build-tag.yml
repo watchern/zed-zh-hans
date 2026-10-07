@@ -123,7 +123,7 @@ jobs:
           sed -i "s/^Version: .*/Version: $VERSION/" deb/DEBIAN/control
 
       - name: 安装 Linux 依赖项
-        run: ./zed/script/linux && ./zed/script/install-mold 2.34.0
+        run: ./zed/script/linux
 
       - name: 限制目标目录大小
         run: zed/script/clear-target-dir-if-larger-than 100
