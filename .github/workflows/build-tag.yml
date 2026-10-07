@@ -18,6 +18,8 @@ jobs:
   info-show:
     runs-on: ubuntu-latest
     name: 显示编译信息
+    outputs:
+      zed_ref: ${{ steps.detect-ref.outputs.ref }}
     steps:
       - name: 显示
         run: |
@@ -25,6 +27,22 @@ jobs:
           echo ${{ inputs.branch }}
           echo "是否发行："
           echo ${{ inputs.release }}
+
+      - name: 检测 zed 引用类型（tag 优先，branch 兜底）
+        id: detect-ref
+        run: |
+          REPO_URL="https://github.com/zed-industries/zed"
+          TARGET="${{ inputs.branch }}"
+          if git ls-remote --exit-code --tags "$REPO_URL" "refs/tags/$TARGET" >/dev/null 2>&1; then
+            echo "ref=refs/tags/$TARGET" >> "$GITHUB_OUTPUT"
+            echo "命中 tag：refs/tags/$TARGET"
+          elif git ls-remote --exit-code --heads "$REPO_URL" "refs/heads/$TARGET" >/dev/null 2>&1; then
+            echo "ref=refs/heads/$TARGET" >> "$GITHUB_OUTPUT"
+            echo "未命中 tag，回退到 branch：refs/heads/$TARGET"
+          else
+            echo "::error::zed 仓库中既不存在 tag 也不存在 branch：$TARGET"
+            exit 1
+          fi
 
   build-windows:
     needs: info-show
@@ -59,7 +77,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: zed-industries/zed
-          ref: ${{ inputs.branch }}
+          ref: ${{ needs.info-show.outputs.zed_ref }}
           path: zed
 
       - name: 替换
@@ -109,7 +127,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: zed-industries/zed
-          ref: ${{ inputs.branch }}
+          ref: ${{ needs.info-show.outputs.zed_ref }}
           path: zed
       - name: 替换
         run: python3 step4-replace.py
@@ -178,7 +196,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: zed-industries/zed
-          ref: ${{ inputs.branch }}
+          ref: ${{ needs.info-show.outputs.zed_ref }}
           path: zed
       - name: 替换
         run: python3 step4-replace.py

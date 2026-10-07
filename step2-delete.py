@@ -7,21 +7,26 @@ import re
 json_file_path = 'string.json'
 yaml_file_path = 'del.yaml'
 
-def delete_keys_from_dict(data, keys_to_delete, level=1):
+def delete_keys_from_dict(data, keys_to_delete, level=1, patterns=()):
     if isinstance(data, dict):
         return {
-            key: delete_keys_from_dict(value, keys_to_delete, level + 1)
+            key: delete_keys_from_dict(value, keys_to_delete, level + 1, patterns)
             for key, value in data.items()
-            if not (level == 2 and should_delete(key, keys_to_delete))
+            if not (level == 2 and should_delete(key, keys_to_delete, patterns))
         }
     if isinstance(data, list):
-        return [delete_keys_from_dict(item, keys_to_delete, level) for item in data]
+        return [delete_keys_from_dict(item, keys_to_delete, level, patterns) for item in data]
     return data
 
-def should_delete(key, keys_to_delete):
+def should_delete(key, keys_to_delete, patterns=()):
     # 检查全局删除规则
     if key in keys_to_delete:
         return True
+
+    # 检查正则模式规则（del.yaml 的 global_patterns）
+    for pattern in patterns:
+        if pattern.search(key):
+            return True
 
     # 检查是否为网址
     if re.match(r'https?://', key):
@@ -54,15 +59,19 @@ def main(strings: str, deletes: str):
     # 获取全局删除规则
     global_keys_to_delete = yaml_data.get('global', [])
 
+    # 获取全局正则模式规则（键名匹配任一正则即删除）
+    global_patterns = [re.compile(p) for p in yaml_data.get('global_patterns', [])]
+
     # 遍历JSON数据并删除全局规则中的键
-    json_data = delete_keys_from_dict(json_data, global_keys_to_delete)
+    json_data = delete_keys_from_dict(json_data, global_keys_to_delete, patterns=global_patterns)
 
     # 遍历YAML数据并删除JSON数据中的对应项
     for file_path, keys_to_delete in yaml_data.items():
-        if file_path == 'global':
+        if file_path in ('global', 'global_patterns'):
             continue
         if file_path in json_data:
-            json_data[file_path] = delete_keys_from_dict(json_data[file_path], keys_to_delete)
+            json_data[file_path] = delete_keys_from_dict(
+                json_data[file_path], keys_to_delete, patterns=global_patterns)
 
     # 将修改后的内容写回JSON文件
     with open(strings, 'w', encoding='utf-8') as json_file:

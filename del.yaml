@@ -25,6 +25,9 @@ global: # 全局规则，对所有文件生效
   - "⋯"
   - "Bearer {}"
   - "foo"
+global_patterns: # 全局正则规则：键名匹配任一正则即删除（不进入翻译）
+  - '\\u\{[0-9a-fA-F]+\}' # Rust unicode 转义序列 \u{...}（zalgo/组合字符等测试串，代码不可译）
+  - '\\x[0-9a-fA-F]{2}' # Rust 十六进制转义序列 \xHH
 "zed/crates/activity_indicator/src/activity_indicator.rs":
   - " ({}%)"
   - "arrow-circle"

@@ -44,6 +44,11 @@ def placeholders_match(original: str, new_value: str) -> bool:
     """译文的占位符多重集必须与原文完全一致，否则替换后 format! 参数不匹配、编译失败。"""
     return Counter(extract_placeholders(original)) == Counter(extract_placeholders(new_value))
 
+def extract_escapes(s: str):
+    """提取 Rust 转义序列（\\u{hex} / \\xHH）多重集。
+    转义序列是代码的一部分，译文若将其剥离（如 \\u{0301} 变成非法的 \\u）会直接编译失败。"""
+    return Counter(m.group(0) for m in _RUST_ESCAPE_RE.finditer(s))
+
 # ---------------------------------------------------------------------------
 # Rust 词法扫描：找出所有字符串字面量的精确位置
 # 目的：替换只允许发生在字符串字面量内部，防止片段 key 匹配到代码上下文
@@ -168,6 +173,7 @@ with open(json_file_path, 'r', encoding='utf-8') as json_file:
 skip_placeholder = 0
 skip_context = 0
 skip_quote = 0
+skip_escape = 0
 
 for file_path, replacements in json_data.items():
     if not os.path.exists(file_path):
@@ -202,7 +208,12 @@ for file_path, replacements in json_data.items():
             print(f'[SKIP] 译文以反斜杠结尾，拒绝替换: {file_path}: {repr(original)}')
             skip_quote += 1
             continue
-        # 守卫 3：占位符多重集必须一致（保护 Rust format! 参数）
+        # 守卫 3：转义序列必须原样保留（防止 \u{0301} 被剥成非法的 \u 导致编译失败）
+        if extract_escapes(original) != extract_escapes(new_value):
+            print(f'[SKIP] 转义序列被丢弃，拒绝替换: {file_path}: {repr(original)} -> {repr(new_value)}')
+            skip_escape += 1
+            continue
+        # 守卫 4：占位符多重集必须一致（保护 Rust format! 参数）
         if extract_placeholders(original) and not placeholders_match(original, new_value):
             print(f'[SKIP] 占位符不一致，拒绝替换: {file_path}: {repr(original)} -> {repr(new_value)}')
             skip_placeholder += 1
@@ -223,7 +234,8 @@ for file_path, replacements in json_data.items():
             file.write(content)
 
 print(f'Successfully replaced strings in the original files '
-      f'(跳过 {skip_placeholder} 条占位符不一致, {skip_context} 条非字符串上下文, {skip_quote} 条引号不安全)')
+      f'(跳过 {skip_placeholder} 条占位符不一致, {skip_escape} 条转义序列丢失, '
+      f'{skip_context} 条非字符串上下文, {skip_quote} 条引号不安全)')
 
 if missing_files:
     print('The following files were not found:')
