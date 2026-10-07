@@ -27,10 +27,14 @@ for file_path, replacements in json_data.items():
     with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
 
-    # 替换非空值
+    # 替换非空值（使用简单字符串替换，避免正则转义问题）
     for original, new_value in replacements.items():
-        if new_value:  # 如果值不为空
-            content = re.sub(rf'"{re.escape(original)}"', f'"{new_value}"', content)
+        if new_value and original:  # 如果值不为空且键不为空
+            # 直接字符串替换，不使用正则
+            search_str = f'"{original}"'
+            replace_str = f'"{new_value}"'
+            if search_str in content:
+                content = content.replace(search_str, replace_str)
 
     # 将修改后的内容写回文件
     with open(file_path, 'w', encoding='utf-8') as file:
