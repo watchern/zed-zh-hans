@@ -73,6 +73,11 @@ global_patterns: # 全局正则规则：键名匹配任一正则即删除（不�
   - '\n\s*// ' # Rust 注释碎片
   - '\.is_confirm\(\)' # 命令权限测试 API
   - '\.is_deny\(\)' # 命令权限测试 API
+  # ---- 新增：键名含换行（2026-10-08 第二批） ----
+  - '\n' # 键含真实换行符（多行代码/注释碎片）
+  - '\\n' # 键含字面 \n 两字符（源码转义序列）
+section_patterns: # 顶层文件段名匹配任一正则即整段删除（不进入翻译）
+  - '^zed/crates/languages/' # languages 源码段整段删除（2026-10-08 用户指定）
 "zed/crates/activity_indicator/src/activity_indicator.rs":
   - " ({}%)"
   - "arrow-circle"
